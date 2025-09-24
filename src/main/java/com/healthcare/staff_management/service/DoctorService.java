@@ -17,7 +17,7 @@ public interface DoctorService {
      * This method is responsible for modifying doctor's information
      * @param updateDoctorDTO
      */
-    DoctorResponseDTO updateDoctor(UpdateDoctorDTO updateDoctorDTO);
+    DoctorResponseDTO updateDoctor(Integer doctorId, UpdateDoctorDTO updateDoctorDTO);
 
     /**
      * This method updates the status of the

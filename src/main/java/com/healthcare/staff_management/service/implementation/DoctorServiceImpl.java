@@ -3,6 +3,7 @@ package com.healthcare.staff_management.service.implementation;
 import com.healthcare.staff_management.dto.DoctorResponseDTO;
 import com.healthcare.staff_management.dto.NewDoctorRequestDTO;
 import com.healthcare.staff_management.dto.UpdateDoctorDTO;
+import com.healthcare.staff_management.dto.UserResponseDto;
 import com.healthcare.staff_management.model.Doctor;
 import com.healthcare.staff_management.model.DoctorSpeciality;
 import com.healthcare.staff_management.repository.DoctorRepository;
@@ -32,7 +33,19 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public DoctorResponseDTO newDoctor(NewDoctorRequestDTO newDoctorRequestDTO) {
-        return null;
+
+        // Check if the doctor already exists:
+        if(doctorRepository.existsByNationalId(newDoctorRequestDTO.getNationalId())){
+
+        }
+    }
+
+    /**
+     * This method helper is responsible for creating new user in the system
+     * @return
+     */
+    private UserResponseDto createUser(){
+
     }
 
     @Override

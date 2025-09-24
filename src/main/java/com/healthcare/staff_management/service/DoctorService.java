@@ -22,4 +22,10 @@ public interface DoctorService {
     /**
      * This method updates the status of the
      */
+
+    /**
+     * This method used to check if a doctor truly exist in the system
+     * @return a true/false
+     */
+    boolean checkDoctorExistence(Integer id);
 }

@@ -8,6 +8,7 @@ import com.healthcare.staff_management.repository.DoctorRepository;
 import com.healthcare.staff_management.service.DoctorService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -89,10 +90,9 @@ public class DoctorServiceImpl implements DoctorService {
         );
 
         // update the personal information and return the new data
-        updateProfessionalInformation();
+        updateProfessionalInformation(doctorId,updateDoctorDTO);
 
         return new DoctorResponseDTO();
-        return null;
     }
 
     @Override
@@ -115,8 +115,13 @@ public class DoctorServiceImpl implements DoctorService {
         // send the request to the user-management service
         HttpHeaders httpHeaders = new HttpHeaders();
         HttpEntity<PersonalInformationDto> httpEntity = new HttpEntity<>(personalInformationDto,httpHeaders);
+        /*
         ResponseEntity<?> response =
                 restTemplate.exchange()
+
+         */
+
+        return new PersonalInformationDto();
 
     }
 
@@ -152,6 +157,7 @@ public class DoctorServiceImpl implements DoctorService {
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 class PersonalInformationDto{
     private String firstName;
     private String lastName;

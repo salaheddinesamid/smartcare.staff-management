@@ -9,8 +9,10 @@ import com.healthcare.staff_management.service.DoctorService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -67,12 +69,15 @@ public class DoctorServiceImpl implements DoctorService {
 
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<NewUserRequestDto> entity = new HttpEntity<>(newUserRequestDto,headers);
-        ResponseEntity<UserResponseDto> response =
+        ResponseEntity<ApiResponse<UserResponseDto>> response =
                 restTemplate.exchange(
                         uri,
+                        HttpMethod.POST,
                         entity,
-                        ResponseEntity.class
-                )
+                        new ParameterizedTypeReference<ApiResponse<UserResponseDto>>() {}
+                );
+
+        return response.getBody().getData();
     }
 
     @Override

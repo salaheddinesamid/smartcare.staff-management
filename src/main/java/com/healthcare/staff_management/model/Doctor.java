@@ -14,6 +14,9 @@ public class Doctor {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer doctorId;
 
+    @Column(name = "user_id")
+    private Integer userId;
+
     @Column(name = "national_id")
     private String nationalId;
 

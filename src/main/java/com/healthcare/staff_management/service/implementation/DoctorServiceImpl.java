@@ -1,9 +1,7 @@
 package com.healthcare.staff_management.service.implementation;
 
-import com.healthcare.staff_management.dto.DoctorResponseDTO;
-import com.healthcare.staff_management.dto.NewDoctorRequestDTO;
-import com.healthcare.staff_management.dto.UpdateDoctorDTO;
-import com.healthcare.staff_management.dto.UserResponseDto;
+import com.healthcare.staff_management.dto.*;
+import com.healthcare.staff_management.exception.DoctorAlreadyExistsException;
 import com.healthcare.staff_management.model.Doctor;
 import com.healthcare.staff_management.model.DoctorSpeciality;
 import com.healthcare.staff_management.repository.DoctorRepository;
@@ -36,16 +34,45 @@ public class DoctorServiceImpl implements DoctorService {
 
         // Check if the doctor already exists:
         if(doctorRepository.existsByNationalId(newDoctorRequestDTO.getNationalId())){
-
+            throw new DoctorAlreadyExistsException();
         }
+
+        // Create new user:
+        NewUserRequestDto newUserRequestDto = new NewUserRequestDto(
+
+        );
+        UserResponseDto user = createUser(newUserRequestDto);
+
+        // Then, we create a new doctor:
+        Doctor doctor = new Doctor();
+        doctor.setUserId(user.getUserId());
+        doctor.setGender(newDoctorRequestDTO.getGender());
+        doctor.setProfessionalId(newDoctorRequestDTO.getProfessionalId());
+        doctor.setNationalId(newDoctorRequestDTO.getNationalId());
+        doctor.setSpeciality(DoctorSpeciality.valueOf(newDoctorRequestDTO.getSpeciality()));
+        doctor.setYearsOfExperience(newDoctorRequestDTO.getYearsOfExperience());
+
+        return new DoctorResponseDTO(
+                user,
+                doctor
+        );
     }
 
     /**
      * This method helper is responsible for creating new user in the system
      * @return
      */
-    private UserResponseDto createUser(){
+    private UserResponseDto createUser(NewUserRequestDto newUserRequestDto){
+        String uri = USER_MANAGEMENT_URI + "/api/user/new";
 
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<NewUserRequestDto> entity = new HttpEntity<>(newUserRequestDto,headers);
+        ResponseEntity<UserResponseDto> response =
+                restTemplate.exchange(
+                        uri,
+                        entity,
+                        ResponseEntity.class
+                )
     }
 
     @Override

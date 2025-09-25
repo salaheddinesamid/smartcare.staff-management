@@ -12,6 +12,7 @@ public class NewDoctorRequestDTO {
     private String role;
 
     private String nationalId;
+    private String gender;
     private String professionalId;
     private Integer yearsOfExperience;
     private String speciality;

@@ -18,4 +18,15 @@ public class DoctorExceptionController {
         return ResponseEntity.status(500)
                 .body(response);
     }
+
+    @ExceptionHandler(UserCannotBeCreatedException.class)
+    public ResponseEntity<ApiResponse<?>> handleErrorWhenCreatingUser(UserCannotBeCreatedException exception){
+        ApiResponse<?> ex = new ApiResponse<>(
+                false,
+                exception.getMessage(),
+                null
+        );
+        return ResponseEntity.status(500)
+                .body(ex);
+    }
 }

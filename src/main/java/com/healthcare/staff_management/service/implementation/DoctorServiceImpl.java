@@ -2,6 +2,7 @@ package com.healthcare.staff_management.service.implementation;
 
 import com.healthcare.staff_management.dto.*;
 import com.healthcare.staff_management.exception.DoctorAlreadyExistsException;
+import com.healthcare.staff_management.exception.UserCannotBeCreatedException;
 import com.healthcare.staff_management.model.Doctor;
 import com.healthcare.staff_management.model.DoctorSpeciality;
 import com.healthcare.staff_management.repository.DoctorRepository;
@@ -24,8 +25,7 @@ public class DoctorServiceImpl implements DoctorService {
     private final DoctorRepository doctorRepository;
     private final RestTemplate restTemplate;
 
-    @Value("${application.user-management-uri}")
-    private static String USER_MANAGEMENT_URI;
+    private static final String USER_MANAGEMENT_URI = "http://localhost:8080";
 
     public DoctorServiceImpl(DoctorRepository doctorRepository, RestTemplate restTemplate) {
         this.doctorRepository = doctorRepository;
@@ -42,10 +42,17 @@ public class DoctorServiceImpl implements DoctorService {
 
         // Create new user:
         NewUserRequestDto newUserRequestDto = new NewUserRequestDto(
-
+                newDoctorRequestDTO.getFirstName(),
+                newDoctorRequestDTO.getLastName(),
+                newDoctorRequestDTO.getEmail(),
+                newDoctorRequestDTO.getPassword(),
+                "DOCTOR"
         );
         UserResponseDto user = createUser(newUserRequestDto);
 
+        if(user == null){
+            throw new UserCannotBeCreatedException();
+        }
         // Then, we create a new doctor:
         Doctor doctor = new Doctor();
         doctor.setUserId(user.getUserId());

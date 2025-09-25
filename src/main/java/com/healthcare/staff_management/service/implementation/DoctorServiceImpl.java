@@ -98,12 +98,14 @@ public class DoctorServiceImpl implements DoctorService {
     /**
      * This method helper will update the user information
      */
-    private PersonalInformationDto updatePersonalInformation(Integer id, UpdateDoctorDTO updateDoctorDTO){
+    private PersonalInformationDto updatePersonalInformation(Integer id, UpdateUserRequestDTO updateUserRequestDTO){
+
+        String uri = USER_MANAGEMENT_URI + "/api/user/update";
         PersonalInformationDto personalInformationDto = new PersonalInformationDto(
-                updateDoctorDTO.getFirstName(),
-                updateDoctorDTO.getLastName(),
-                updateDoctorDTO.getEmail(),
-                updateDoctorDTO.getPassword()
+                updateUserRequestDTO.getFirstName(),
+                updateUserRequestDTO.getLastName(),
+                updateUserRequestDTO.getEmail(),
+                updateUserRequestDTO.getPassword()
         );
         // send the request to the user-management service
         HttpHeaders httpHeaders = new HttpHeaders();

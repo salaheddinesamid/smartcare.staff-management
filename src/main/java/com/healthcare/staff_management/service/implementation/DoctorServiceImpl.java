@@ -62,6 +62,8 @@ public class DoctorServiceImpl implements DoctorService {
         doctor.setSpeciality(DoctorSpeciality.valueOf(newDoctorRequestDTO.getSpeciality()));
         doctor.setYearsOfExperience(newDoctorRequestDTO.getYearsOfExperience());
 
+        doctorRepository.save(doctor);
+
         return new DoctorResponseDTO(
                 user,
                 doctor

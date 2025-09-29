@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/staff-management")
 public class StaffController {
@@ -37,5 +39,17 @@ public class StaffController {
 
         return ResponseEntity.status(200)
                 .body(response);
+    }
+
+    @GetMapping("/get_all")
+    public ResponseEntity<ApiResponse<?>> getAllDoctors(){
+        List<DoctorResponseDTO> doctors = doctorService.getAllDoctors();
+
+        return ResponseEntity.status(200)
+                .body(new ApiResponse<>(
+                        true,
+                        "",
+                        doctors
+                ));
     }
 }

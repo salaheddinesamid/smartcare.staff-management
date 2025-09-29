@@ -10,6 +10,7 @@ import com.healthcare.staff_management.service.DoctorService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -19,6 +20,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@Slf4j
 @Service
 public class DoctorServiceImpl implements DoctorService {
 
@@ -105,6 +112,40 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
+    public List<DoctorResponseDTO> getAllDoctors() {
+
+        log.info("Getting all doctors from the system");
+        // Fetch doctors:
+        List<Doctor> doctors =
+                doctorRepository.findAll();
+
+
+        // Extract user ids:
+        List<Integer> userId = doctors
+                .stream().map(Doctor::getUserId).toList();
+        log.debug("Fetching doctor's user id:{}", userId);
+
+        // Fetch users:
+        List<UserResponseDto> users = getUsers(List.of(103));
+
+        // Create a map for quick lookup:
+        Map<Integer, UserResponseDto> usersMap =
+                users.stream().collect(Collectors.toMap(UserResponseDto::getUserId, u-> u));
+
+        return doctors
+                .stream()
+                .map(doctor -> {
+                    UserResponseDto user = usersMap.get(doctor.getUserId());
+                    return new DoctorResponseDTO(
+                            user,
+                            doctor
+                    );
+                }).toList();
+
+
+    }
+
+    @Override
     public boolean checkDoctorExistence(Integer id) {
         return doctorRepository.existsById(id);
     }
@@ -158,6 +199,24 @@ public class DoctorServiceImpl implements DoctorService {
 
     public ResponseEntity<?> updateUserDetails(){
         return null;
+    }
+
+    private List<UserResponseDto> getUsers(List<Integer> userId){
+        String uri = USER_MANAGEMENT_URI + "/api/user/get-users";
+        HttpHeaders headers = new HttpHeaders();
+
+        HttpEntity<List<Integer>> entity = new HttpEntity<>(userId,headers);
+
+        ResponseEntity<ApiResponse<List<UserResponseDto>>> response =
+                restTemplate.exchange(
+                        uri,
+                        HttpMethod.POST,
+                        entity,
+                        new ParameterizedTypeReference<ApiResponse<List<UserResponseDto>>>() {
+                        }
+                );
+
+        return response.getBody().getData();
     }
 }
 

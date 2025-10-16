@@ -15,6 +15,7 @@ public class DoctorResponseDTO {
     private String email;
     private String password;
 
+    private Integer doctorId;
     private String professionalId;
     private String speciality;
     private Integer yearsOfExperience;
@@ -26,6 +27,7 @@ public class DoctorResponseDTO {
         this.email = userResponseDto.getEmail();
         this.password = userResponseDto.getPassword();
 
+        this.doctorId = doctor.getDoctorId();
         this.professionalId = doctor.getProfessionalId();
         this.yearsOfExperience = doctor.getYearsOfExperience();
         this.speciality = doctor.getSpeciality().toString();

@@ -29,8 +29,12 @@ public interface DoctorService {
      * This method returns all the doctors in the system
      * return
      */
-
     List<DoctorResponseDTO> getAllDoctors();
+
+    /**
+     * This function returns specific doctors by their ids
+     */
+    List<DoctorResponseDTO> getDoctors(List<Integer> ids);
 
     /**
      * This method used to check if a doctor truly exist in the system

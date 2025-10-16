@@ -41,7 +41,7 @@ public class StaffController {
                 .body(response);
     }
 
-    @GetMapping("/get_all")
+    @GetMapping("/doctor/get_all")
     public ResponseEntity<ApiResponse<?>> getAllDoctors(){
         List<DoctorResponseDTO> doctors = doctorService.getAllDoctors();
 
@@ -51,5 +51,19 @@ public class StaffController {
                         "",
                         doctors
                 ));
+    }
+
+    @PostMapping("/doctor/get-doctors")
+    public ResponseEntity<ApiResponse<?>> getDoctors(@RequestBody List<Integer> ids){
+        List<DoctorResponseDTO> doctors = doctorService.getDoctors(ids);
+
+        ApiResponse<?> response = new ApiResponse<>(
+                true,
+                "",
+                doctors
+        );
+
+        return ResponseEntity.ok()
+                .body(response);
     }
 }

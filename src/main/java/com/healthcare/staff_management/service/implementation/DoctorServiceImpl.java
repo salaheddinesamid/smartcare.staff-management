@@ -11,16 +11,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -91,7 +86,8 @@ public class DoctorServiceImpl implements DoctorService {
                         uri,
                         HttpMethod.POST,
                         entity,
-                        new ParameterizedTypeReference<ApiResponse<UserResponseDto>>() {}
+                        new ParameterizedTypeReference<>() {
+                        }
                 );
 
         return response.getBody().getData();
@@ -123,10 +119,10 @@ public class DoctorServiceImpl implements DoctorService {
         // Extract user ids:
         List<Integer> userId = doctors
                 .stream().map(Doctor::getUserId).toList();
-        log.debug("Fetching doctor's user id:{}", userId);
+        log.info("Fetching doctor's user id:{}", userId);
 
         // Fetch users:
-        List<UserResponseDto> users = getUsers(List.of(103));
+        List<UserResponseDto> users = getUsers(userId);
 
         // Create a map for quick lookup:
         Map<Integer, UserResponseDto> usersMap =
@@ -143,6 +139,14 @@ public class DoctorServiceImpl implements DoctorService {
                 }).toList();
 
 
+    }
+
+    @Override
+    public List<DoctorResponseDTO> getDoctors(List<Integer> ids) {
+        List<DoctorResponseDTO> doctors = getAllDoctors();
+        return
+                doctors.stream()
+                        .filter(doctorResponseDTO -> ids.contains(doctorResponseDTO.getDoctorId())).toList();
     }
 
     @Override
@@ -204,6 +208,7 @@ public class DoctorServiceImpl implements DoctorService {
     private List<UserResponseDto> getUsers(List<Integer> userId){
         String uri = USER_MANAGEMENT_URI + "/api/user/get-users";
         HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<List<Integer>> entity = new HttpEntity<>(userId,headers);
 
